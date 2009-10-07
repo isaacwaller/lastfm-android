@@ -1124,6 +1124,8 @@ public class Profile extends ListActivity
 
         MenuItem nowPlaying = menu.add(Menu.NONE, 2, Menu.NONE, "Now Playing");
 		nowPlaying.setIcon( R.drawable.view_artwork );
+		
+		menu.add(Menu.NONE, 3, Menu.NONE, "Bootstrap");
         return true;
     }
     
@@ -1150,6 +1152,10 @@ public class Profile extends ListActivity
             intent = new Intent( Profile.this, Player.class );
             startActivity( intent );
             return true;
+        case 3:
+			Intent i = new Intent("fm.last.android.scrobbler.BOOTSTRAP");
+			sendBroadcast(i);
+			return true;
         }
         return false;
     }

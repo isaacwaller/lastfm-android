@@ -32,15 +32,18 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -423,6 +426,16 @@ public class ScrobblerService extends Service {
 			   		mSubmissionTask = new SubmitTracksTask();
 			   		mSubmissionTask.execute(mScrobbler);
 		   		}
+			}
+		}
+		if(intent.getAction().equals("fm.last.android.scrobbler.BOOTSTRAP")) {
+			String [] cols={MediaStore.Audio.Media.TITLE,MediaStore.Audio.Media.ARTIST,MediaStore.Audio.Media.ALBUM};
+			Cursor cursor = getContentResolver().query( MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, cols, "is_music = 1",null,null);
+			Log.i("Last.fm", "Got " + cursor.getCount() + " results");
+			while(cursor.moveToNext()) {
+				Log.i("Last.fm", "Title: " + cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE)));
+				Log.i("Last.fm", "Artist: " + cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST)));
+				Log.i("Last.fm", "Album: " + cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM)));
 			}
 		}
 		stopIfReady();
